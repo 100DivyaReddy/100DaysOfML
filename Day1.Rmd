@@ -1,0 +1,54 @@
+---
+title: "Housing Price Predictions"
+author: "Divya Reddy"
+date: "9/24/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load the libraries
+```{r}
+library(ggplot2)
+library(scales)
+```
+
+Set current working directory 
+```{r}
+getwd()
+setwd("C:/Users/dreddy/Desktop/HousingData/")
+```
+
+Load the data 
+```{r}
+housing <- read.csv("./train.csv")
+```
+
+Looking at the number of records and variables 
+```{r}
+dim(housing)
+```
+
+Data structure of the housing object
+```{r}
+str(housing)
+```
+
+Summary of the data
+```{r}
+summary(housing)
+```
+
+Displaying top 5 records of the data
+```{r}
+head(housing, n = 5)
+```
+
+Plotting the predictor variable
+```{r}
+ggplot(data=housing[!is.na(housing$SalePrice),], aes(x=SalePrice)) +
+       geom_histogram(binwidth = 10000) +
+        scale_x_continuous(breaks= seq(0, 800000, by=100000), labels = comma)
+```
