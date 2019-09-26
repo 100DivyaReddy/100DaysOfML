@@ -1,0 +1,84 @@
+---
+title: "Housing Price Predictions - EDA"
+author: "Divya Reddy"
+date: "9/25/2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Load packages
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+Set present working directory and load the data 
+```{r}
+setwd("C:/Users/dreddy/Desktop/HousingData")
+housing <- read.csv("./train.csv")
+```
+
+Looking at the datatypes of the variables 
+```{r}
+str(housing)
+```
+
+After looking at the datatypes and going through the data_description.txt, we need to convert the following columns to character datatype
+
+```{r}
+housing$MSSubClass <- as.character(housing$MSSubClass)
+housing$YearBuilt <- as.character(housing$YearBuilt)
+housing$YearRemodAdd <- as.character(housing$YearRemodAdd)
+housing$MoSold <- as.character(housing$MoSold)
+housing$YrSold <- as.character(housing$YrSold)
+housing$GarageYrBlt <- as.character(housing$GarageYrBlt)
+#str(housing)
+```
+Looking at the summary of the dataset
+#```{r}
+#summary(housing)
+#```
+
+Identify the numeric columns to check for outliers
+```{r}
+colnames(dplyr::select_if(housing, is.numeric))
+```
+
+Plotting graphs for outlier analysis
+```{r}
+boxplot(housing$LotFrontage, ylab = "Lot Frontage", main = "Boxplot for Lot Frontage")
+boxplot(housing$LotArea, ylab = "Lot Area", main = "Boxplot for Lot Area")
+boxplot(housing$OverallQual, ylab = "Quality", main = "Over all Quality")
+boxplot(housing$OverallCond, ylab = "Quality", main = "Over all Condition")
+boxplot(housing$MasVnrArea, ylab = "Masonry Area", main = "Masonry venner area")
+boxplot(housing$BsmtFinSF1, ylab = "Basement Type1 Area", main = "Basement Type 1 Area")
+boxplot(housing$BsmtFinSF2, ylab = "Basement Type2 Area", main = "Basement Type 2 Area")
+boxplot(housing$BsmtUnfSF, ylab = "Basement unfinished Area", main = "Basement Unfinished Area")
+boxplot(housing$TotalBsmtSF, ylab = "Basement Area", main = "Total Basement Area")
+boxplot(housing$X1stFlrSF, ylab = "1st floor sq ft", main = "!st floor Area")
+boxplot(housing$X2ndFlrSF, ylab = "2nd floor sq ft", main = "2nd floor Area")
+boxplot(housing$LowQualFinSF, ylab = "Low quality finish sq ft", main = "Low quality finish sq ft")
+boxplot(housing$GrLivArea)
+boxplot(housing$BsmtFullBath)
+boxplot(housing$BsmtHalfBath)
+boxplot(housing$FullBath)
+boxplot(housing$HalfBath)
+boxplot(housing$BedroomAbvGr)
+boxplot(housing$KitchenAbvGr)
+boxplot(housing$TotRmsAbvGrd)
+boxplot(housing$Fireplaces)
+boxplot(housing$GarageCars)
+boxplot(housing$GarageArea)
+boxplot(housing$WoodDeckSF)
+boxplot(housing$OpenPorchSF)
+boxplot(housing$EnclosedPorch)
+boxplot(housing$X3SsnPorch)
+boxplot(housing$ScreenPorch)
+boxplot(housing$PoolArea)
+boxplot(housing$MiscVal)
+boxplot(housing$SalePrice)
+```
