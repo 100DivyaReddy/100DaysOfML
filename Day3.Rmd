@@ -1,0 +1,74 @@
+---
+title: "Housing Predictions - EDA [Day3]"
+author: "Divya Reddy"
+date: "9/26/2019"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load packages
+```{r}
+library(dplyr)
+library(ggplot2)
+library(data.table)
+```
+
+Set present working directory and load the data 
+```{r}
+setwd("C:/Users/dreddy/Desktop/HousingData")
+housing <- read.csv("./train.csv")
+```
+
+Convert data frame to data table
+```{r}
+housing <- setDT(housing)
+```
+
+Looking at the datatypes of the variables 
+```{r}
+str(housing)
+```
+
+After looking at the datatypes and going through the data_description.txt, we need to convert the following columns to character datatype
+
+```{r}
+housing$MSSubClass <- as.character(housing$MSSubClass)
+housing$YearBuilt <- as.character(housing$YearBuilt)
+housing$YearRemodAdd <- as.character(housing$YearRemodAdd)
+housing$MoSold <- as.character(housing$MoSold)
+housing$YrSold <- as.character(housing$YrSold)
+housing$GarageYrBlt <- as.character(housing$GarageYrBlt)
+#str(housing)
+```
+
+Outliers can be identified by using boxplots, boxplots(IQR) or using Z scores. 
+The boxplot(IQR) method using the 1.5xIQR- Q1 (lower limit) and Q3+ 1.5xIQR (upper limit) to eliminate outliers
+The z-score value is the measure of how far the data point is from the mean = 0 and SD = 1, i.e., a normal deviation. We consider the z scores between -3 to 3 to eliminate outliers.
+You can also remove all outliers less than the 5th percentile and greater than the 95th percentile
+
+
+Plotting graphs for outlier analysis
+```{r}
+varlist <- colnames(dplyr::select_if(housing, is.numeric))
+
+plot <- function (varlist) {
+   # require(ggplot2)
+    ggplot(data = housing, mapping = aes_string(y=varlist))+
+            geom_boxplot() + scale_x_discrete(limits=c("0.5", "1"))
+}
+```
+
+```{r}
+lapply(varlist, FUN = plot)
+```
+
+Display the outliers using boxplot.stats and by using the 5th and 95th percentile
+```{r}
+boxplot.stats(housing$Fireplaces)$out
+select(housing,Fireplaces) %>% filter(Fireplaces > quantile(housing$Fireplaces, 0.05),Fireplaces > quantile(housing$Fireplaces, 0.95))
+```
