@@ -1,0 +1,108 @@
+---
+title: "Outlier Analysis"
+author: "Divya Reddy"
+date: "9/27/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load packages
+```{r}
+library(dplyr)
+library(ggplot2)
+library(data.table)
+```
+
+Set present working directory and load the data 
+```{r}
+setwd("C:/Users/dreddy/Desktop/HousingData")
+housing <- read.csv("./train.csv")
+```
+
+Convert data frame to data table
+```{r}
+housing <- setDT(housing)
+```
+
+Looking at the datatypes of the variables 
+```{r}
+str(housing)
+```
+
+After looking at the datatypes and going through the data_description.txt, we need to convert the following columns to character datatype
+
+```{r}
+housing$MSSubClass <- as.character(housing$MSSubClass)
+housing$YearBuilt <- as.character(housing$YearBuilt)
+housing$YearRemodAdd <- as.character(housing$YearRemodAdd)
+housing$MoSold <- as.character(housing$MoSold)
+housing$YrSold <- as.character(housing$YrSold)
+housing$GarageYrBlt <- as.character(housing$GarageYrBlt)
+#str(housing)
+```
+
+Outliers can be identified by using boxplots, boxplots(IQR) or using Z scores. 
+The boxplot(IQR) method using the 1.5xIQR- Q1 (lower limit) and Q3+ 1.5xIQR (upper limit) to eliminate outliers
+The z-score value is the measure of how far the data point is from the mean = 0 and SD = 1, i.e., a normal deviation. We consider the z scores between -3 to 3 to eliminate outliers.
+You can also remove all outliers less than the 5th percentile and greater than the 95th percentile
+
+
+Plotting graphs for outlier analysis
+```{r}
+varlist <- colnames(dplyr::select_if(housing, is.numeric))
+
+plot <- function (varlist) {
+   # require(ggplot2)
+    ggplot(data = housing, mapping = aes_string(y=varlist))+
+            geom_boxplot() + scale_x_discrete(limits=c("0.5", "1"))
+}
+```
+
+```{r}
+lapply(varlist, FUN = plot)
+```
+
+Display the outliers using boxplot.stats
+```{r}
+boxoutliers <- function(dt,var){
+    var_name <- eval(substitute(var),eval(dt))
+    boxplot.stats(var_name)$out
+}
+```
+
+```{r}
+boxoutliers(housing,LotFrontage)
+boxoutliers(housing,LotArea)
+boxoutliers(housing,OverallQual)
+boxoutliers(housing,OverallCond)
+boxoutliers(housing,MasVnrArea)
+boxoutliers(housing,BsmtFinSF1)
+boxoutliers(housing,BsmtFinSF2)
+boxoutliers(housing,BsmtUnfSF)
+boxoutliers(housing,TotalBsmtSF)
+boxoutliers(housing,X1stFlrSF)
+boxoutliers(housing,X2ndFlrSF)
+boxoutliers(housing,LowQualFinSF)
+boxoutliers(housing,GrLivArea)
+boxoutliers(housing,BsmtFullBath)
+boxoutliers(housing,BsmtHalfBath)
+boxoutliers(housing,FullBath)
+boxoutliers(housing,HalfBath)
+boxoutliers(housing,BedroomAbvGr)
+boxoutliers(housing,KitchenAbvGr)
+boxoutliers(housing,TotRmsAbvGrd)
+boxoutliers(housing,Fireplaces)
+boxoutliers(housing,GarageCars)
+boxoutliers(housing,GarageArea)
+boxoutliers(housing,WoodDeckSF)
+boxoutliers(housing,OpenPorchSF)
+boxoutliers(housing,EnclosedPorch)
+boxoutliers(housing,X3SsnPorch)
+boxoutliers(housing,ScreenPorch)
+boxoutliers(housing,PoolArea)
+boxoutliers(housing,MiscVal)
+boxoutliers(housing,SalePrice)
+```
